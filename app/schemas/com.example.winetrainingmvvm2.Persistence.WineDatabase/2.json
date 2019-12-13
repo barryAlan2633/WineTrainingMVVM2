@@ -2,7 +2,7 @@
   "formatVersion": 1,
   "database": {
     "version": 2,
-    "identityHash": "5095c5588f6034ebf4a34aa4e512c373",
+    "identityHash": "87e5ffad9f55d91664a79ef250c414b4",
     "entities": [
       {
         "tableName": "table_wine",
@@ -50,7 +50,7 @@
       },
       {
         "tableName": "table_question",
-        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` INTEGER NOT NULL, `question` TEXT)",
+        "createSql": "CREATE TABLE IF NOT EXISTS `${TABLE_NAME}` (`id` INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, `type` TEXT, `question` TEXT)",
         "fields": [
           {
             "fieldPath": "id",
@@ -61,8 +61,8 @@
           {
             "fieldPath": "type",
             "columnName": "type",
-            "affinity": "INTEGER",
-            "notNull": true
+            "affinity": "TEXT",
+            "notNull": false
           },
           {
             "fieldPath": "question",
@@ -84,7 +84,7 @@
     "views": [],
     "setupQueries": [
       "CREATE TABLE IF NOT EXISTS room_master_table (id INTEGER PRIMARY KEY,identity_hash TEXT)",
-      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '5095c5588f6034ebf4a34aa4e512c373')"
+      "INSERT OR REPLACE INTO room_master_table (id,identity_hash) VALUES(42, '87e5ffad9f55d91664a79ef250c414b4')"
     ]
   }
 }
