@@ -19,17 +19,17 @@ public class WineAdapter extends RecyclerView.Adapter<WineAdapter.ViewHolder> {
     private static final String TAG = "WineAdapter";
 
     private List<Wine> mWineList;
-    private OnWineClickListener mOnWineClickListener;
+    private OnItemClickListener mOnItemClickListener;
 
-    public WineAdapter(OnWineClickListener onWineClickListener) {
-        this.mOnWineClickListener = onWineClickListener;
+    public WineAdapter(OnItemClickListener onItemClickListener) {
+        this.mOnItemClickListener = onItemClickListener;
     }
 
     @NonNull
     @Override
     public ViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View view = LayoutInflater.from(parent.getContext()).inflate(R.layout.list_item_wine, parent, false);
-        return new ViewHolder(view, mOnWineClickListener);
+        return new ViewHolder(view, mOnItemClickListener);
     }
 
     @Override
@@ -64,16 +64,16 @@ public class WineAdapter extends RecyclerView.Adapter<WineAdapter.ViewHolder> {
 
     public class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         TextView tvName, tvCategory, tvGlassPrice, tvBottlePrice;
-        OnWineClickListener onWineClickListener;
+        OnItemClickListener onItemClickListener;
 
-        public ViewHolder(View itemView, OnWineClickListener onNoteListener) {
+        public ViewHolder(View itemView, OnItemClickListener onNoteListener) {
             super(itemView);
             tvName = itemView.findViewById(R.id.tv_name);
             tvCategory = itemView.findViewById(R.id.tv_category);
             tvGlassPrice = itemView.findViewById(R.id.tv_glassPrice);
             tvBottlePrice = itemView.findViewById(R.id.tv_bottlePrice);
 
-            this.onWineClickListener = onNoteListener;
+            this.onItemClickListener = onNoteListener;
 
             itemView.setOnClickListener(this);
         }
@@ -81,7 +81,7 @@ public class WineAdapter extends RecyclerView.Adapter<WineAdapter.ViewHolder> {
 
         @Override
         public void onClick(View v) {
-            onWineClickListener.onWineClick(getAdapterPosition());
+            onItemClickListener.onItemClick(getAdapterPosition());
         }
     }
 }

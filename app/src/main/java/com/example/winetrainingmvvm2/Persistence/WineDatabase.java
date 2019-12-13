@@ -12,7 +12,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import com.example.winetrainingmvvm2.Models.Question;
 import com.example.winetrainingmvvm2.Models.Wine;
 
-@Database(entities = {Wine.class, Question.class},version = 2)
+@Database(entities = {Wine.class, Question.class},version = 3)
 public abstract class WineDatabase extends RoomDatabase {
     private static final String TAG = "WineDatabase";
 
