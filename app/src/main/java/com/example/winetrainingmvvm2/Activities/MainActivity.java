@@ -15,10 +15,18 @@ public class MainActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-        Button btnWineList = findViewById(R.id.btn_editList);
+        Button btnHighScores = findViewById(R.id.btn_highScores);
+        Button btnWineList = findViewById(R.id.btn_editWine);
         Button btnQuestionList = findViewById(R.id.btn_editQuestions);
-        Button btn_play = findViewById(R.id.btn_play);
+        Button btnPlay = findViewById(R.id.btn_play);
 
+        btnHighScores.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent intent = new Intent(getApplicationContext(), HighScoresActivity.class);
+                startActivity(intent);
+            }
+        });
 
         btnWineList.setOnClickListener(new View.OnClickListener(){
             @Override
@@ -36,7 +44,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
 
-        btn_play.setOnClickListener(new View.OnClickListener() {
+        btnPlay.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), PlayActivity.class);

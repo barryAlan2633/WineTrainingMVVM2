@@ -10,9 +10,10 @@ import androidx.room.RoomDatabase;
 import androidx.sqlite.db.SupportSQLiteDatabase;
 
 import com.example.winetrainingmvvm2.Models.Question;
+import com.example.winetrainingmvvm2.Models.Score;
 import com.example.winetrainingmvvm2.Models.Wine;
 
-@Database(entities = {Wine.class, Question.class},version = 3)
+@Database(entities = {Wine.class, Question.class, Score.class}, version = 5)
 public abstract class WineDatabase extends RoomDatabase {
     private static final String TAG = "WineDatabase";
 
