@@ -11,12 +11,12 @@ public class Question {
     private int id;
 
     @ColumnInfo(name = "type")
-    private int type;
+    private String type;
 
     @ColumnInfo(name = "question")
     private String question;
 
-    public Question(int type, String question) {
+    public Question(String type, String question) {
         this.type = type;
         this.question = question;
     }
@@ -29,7 +29,7 @@ public class Question {
         this.id = id;
     }
 
-    public int getType() {
+    public String getType() {
         return type;
     }
 

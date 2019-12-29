@@ -9,17 +9,26 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".PlayActivity"></activity>
+        <activity
+            android:name=".Activities.HighScoresActivity"
+            android:parentActivityName=".Activities.MainActivity" >
+        </activity>
+        <activity
+            android:name=".Activities.PlayActivity"
+            android:parentActivityName=".Activities.MainActivity" />
         <activity
             android:name=".Activities.ListActivity"
-            android:parentActivityName=".Activities.MainActivity"></activity>
-        <activity android:name=".Activities.MainActivity">
+            android:parentActivityName=".Activities.MainActivity" />
+        <activity
+            android:name=".Activities.MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
-
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+        <activity
+            android:name=".Activities.QuestionActivity"
+            android:parentActivityName=".Activities.MainActivity" />
     </application>
 
 </manifest>
