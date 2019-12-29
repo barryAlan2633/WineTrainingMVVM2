@@ -15,7 +15,6 @@ import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -44,7 +43,6 @@ public class PlayActivity extends AppCompatActivity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        Log.d(TAG, "onCreate: start of onCreate");
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_play);
 
@@ -62,7 +60,6 @@ public class PlayActivity extends AppCompatActivity {
         btnName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Log.d(TAG, "onClick: THE NUMBER OF SCORES IS " + mAllScores.size() + "===============================");
                 if (!mAllWines.isEmpty() && !mAllQuestions.isEmpty()) {
                     mViewModel.setChosenType(NAMES);
                     setGameLayout();
@@ -161,12 +158,9 @@ public class PlayActivity extends AppCompatActivity {
                         }
 
                     }, 2000);
-                    Log.d(TAG, "onClick: THE NUMBER OF SCORES IS " + mAllScores.size() + "---------------------");
 
                 } else {
                     mViewModel.setNumberOfQuestions(10);
-
-                    Log.d(TAG, "onClick: THE NUMBER OF SCORES IS " + mAllScores.size() + "---------------------");
                     scoreAlertDialog();
                 }
 
@@ -248,17 +242,15 @@ public class PlayActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent (getApplicationContext(),MainActivity.class);
+        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
         startActivity(intent);
     }
 
     private void printScore() {
         Log.d(TAG, "onClick: THE NUMBER OF SCORES IS " + mAllScores.size() + "+++++++++++++++++++++++++++++++++");
-
     }
 
     private void initViewModel() {
-        Log.d(TAG, "initViewModel: start init viewModel");
         mViewModel = ViewModelProviders.of(this).get(ViewModel.class);
 
         mViewModel.getAllWines().observe(this, new Observer<List<Wine>>() {
@@ -266,7 +258,6 @@ public class PlayActivity extends AppCompatActivity {
             public void onChanged(List<Wine> wines) {
                 if (wines != null) {
                     mAllWines = wines;
-                    Log.d(TAG, "onChanged: updating winelist");
                 }
             }
         });
@@ -276,8 +267,6 @@ public class PlayActivity extends AppCompatActivity {
             public void onChanged(List<Question> questions) {
                 if (questions != null) {
                     mAllQuestions = questions;
-                    Log.d(TAG, "onChanged: updating questionlist");
-
                 }
             }
         });
@@ -287,150 +276,118 @@ public class PlayActivity extends AppCompatActivity {
             public void onChanged(List<Score> scores) {
                 if (scores != null) {
                     mAllScores = scores;
-                    Log.d(TAG, "onChanged: updating scorelist");
                     printScore();
                 }
             }
         });
-        Log.d(TAG, "initViewModel: finish init viewModel");
-
-
     }
 
     private void setGameLayout() {
-        Log.d(TAG, "setGameLayout: started setting game layout with " + mViewModel.getChosenType() + " as the type");
         ConstraintLayout categoriesLayout = findViewById(R.id.layout_categories);
         ConstraintLayout playLayout = findViewById(R.id.layout_play);
 
         categoriesLayout.setVisibility(View.GONE);
         playLayout.setVisibility(View.VISIBLE);
-        Log.d(TAG, "setGameLayout: finished setting game layout with " + mViewModel.getChosenType() + " as the type");
 
     }
 
     private void pickRandomWinesAndAnswer() {
         //Add three random wines with different categories to an empty CurrentQuestionWines List
-        mViewModel.getCurrentWines().clear();
+        mViewModel.getSelectedWines().clear();
         Random r = new Random();
 
         //Add first wine
-        mViewModel.getCurrentWines().add(mAllWines.get(r.nextInt(mAllWines.size())));
-        Log.d(TAG, "pickRandomWinesAndAnswer: added " + mViewModel.getCurrentWines().get(0).getName() + " category: " + mViewModel.getCurrentWines().get(0).getCategory());
+        mViewModel.getSelectedWines().add(mAllWines.get(r.nextInt(mAllWines.size())));
 
         //Add second and third wines
-        int count = 0;
-        int i = 0;
-        do {
+        int winesAdded = 1;
+        while(winesAdded < 3) {
             int randomWineIndex = r.nextInt(mAllWines.size());
+            Wine possibleWine = mAllWines.get(randomWineIndex);
 
-            if (!mViewModel.getCurrentWines().isEmpty()) {
-                Wine possibleWine = mAllWines.get(randomWineIndex);
-
-                for (Wine wine : mViewModel.getCurrentWines()) {
-                    if (mViewModel.getCurrentWines().contains(possibleWine)) {
-                        i = 0;
-                        Log.d(TAG, "pickRandomWinesAndAnswer: skipped " + possibleWine.getName() + " category: " + possibleWine.getCategory());
-                        break;
-                    }
-
-                    //Checking if whatever the answer is is already in the array
-                    switch (mViewModel.getCurrentQuestion().get(0).getType()) {
-                        case "name":
-                            if (!possibleWine.getName().equals(wine.getName())) {
-                                count++;
-                            } else {
-                                count = 0;
-                            }
-                            break;
-                        case "category":
-                            if (!possibleWine.getCategory().equals(wine.getCategory())) {
-                                count++;
-                            } else {
-                                count = 0;
-                            }
-                            break;
-                        case "glass":
-                            if (possibleWine.getGlassPrice() != wine.getGlassPrice()) {
-                                count++;
-                            } else {
-                                count = 0;
-                            }
-                            break;
-                        case "bottle":
-                            if (possibleWine.getBottlePrice() != wine.getBottlePrice()) {
-                                count++;
-                            } else {
-                                count = 0;
-                            }
-                            break;
-                        default:
-                            throw new IllegalStateException("Unexpected value: " + mViewModel.getCurrentQuestion().get(0).getType());
-                    }
-
-                    if (count == mViewModel.getCurrentWines().size()) {
-                        break;
-                    }
-                }
-                if (count == mViewModel.getCurrentWines().size()) {
-                    mViewModel.getCurrentWines().add(mAllWines.get(randomWineIndex));
-                    Log.d(TAG, "pickRandomWinesAndAnswer: added " + possibleWine.getName() + " category: " + possibleWine.getCategory());
-                    i++;
-                    count = 0;
-                }
+            if (!doesSelectedWineListContain(mViewModel.getSelectedQuestion().get(0).getType(), possibleWine)) {
+                mViewModel.getSelectedWines().add(mAllWines.get(randomWineIndex));
+                winesAdded++;
             }
+
         }
-        while (i < 2);
 
         mViewModel.setAnswerWine();
+    }
 
-        Log.d(TAG, "pickRandomWinesAndAnswer: finished picking answers");
+    private boolean doesSelectedWineListContain(String type, Wine possibleWine) {
+
+        if (mViewModel.getSelectedWines().contains(possibleWine)) {
+            return true;
+        }
+
+        for (Wine selectedWine : mViewModel.getSelectedWines()) {
+
+            //Checking if whatever the answer is is already in the array
+            switch (type) {
+                case "name":
+                    if (possibleWine.getName().equals(selectedWine.getName())) {
+                        return true;
+                    }
+                    break;
+                case "category":
+                    if (possibleWine.getCategory().equals(selectedWine.getCategory())) {
+                        return true;
+                    }
+                    break;
+                case "glass":
+                    if (possibleWine.getGlassPrice() == selectedWine.getGlassPrice()) {
+                        return true;
+                    }
+                    break;
+                case "bottle":
+                    if (possibleWine.getBottlePrice() == selectedWine.getBottlePrice()) {
+                        return true;
+                    }
+                    break;
+                default:
+                    throw new IllegalStateException("Unexpected value: " + mViewModel.getSelectedQuestion().get(0).getType());
+            }
+        }
+
+        return false;
     }
 
     private void pickRandomQuestion() {
-        Log.d(TAG, "pickRandomQuestion: starting to choose random question");
         int i = 0;
         do {
-            mViewModel.getCurrentQuestion().clear();
+            mViewModel.getSelectedQuestion().clear();
             Random r = new Random();
             Question possibleQuestion = mAllQuestions.get(r.nextInt(mAllQuestions.size()));
 
             if (mViewModel.getChosenType() == NAMES && possibleQuestion.getType().equals("name")) {
-                mViewModel.getCurrentQuestion().add(possibleQuestion);
-                Log.d(TAG, "pickRandomQuestion: Saving " + possibleQuestion.getQuestion() + " from type name to viewModel");
+                mViewModel.getSelectedQuestion().add(possibleQuestion);
                 i++;
             } else if (mViewModel.getChosenType() == CATEGORIES && possibleQuestion.getType().equals("category")) {
-                mViewModel.getCurrentQuestion().add(possibleQuestion);
-                Log.d(TAG, "pickRandomQuestion: Saving " + possibleQuestion.getQuestion() + " from type category to viewModel");
+                mViewModel.getSelectedQuestion().add(possibleQuestion);
                 i++;
             } else if (mViewModel.getChosenType() == PRICES && (possibleQuestion.getType().equals("glass") || possibleQuestion.getType().equals("bottle"))) {
-                mViewModel.getCurrentQuestion().add(possibleQuestion);
-                Log.d(TAG, "pickRandomQuestion: Saving " + possibleQuestion.getQuestion() + " from type price to viewModel");
+                mViewModel.getSelectedQuestion().add(possibleQuestion);
                 i++;
             } else if (mViewModel.getChosenType() == ALL) {
-                mViewModel.getCurrentQuestion().add(possibleQuestion);
-                Log.d(TAG, "pickRandomQuestion: Saving " + possibleQuestion.getQuestion() + " from type all to viewModel");
+                mViewModel.getSelectedQuestion().add(possibleQuestion);
                 i++;
             }
 
         } while (i < 1);
 
 
-        Log.d(TAG, "pickRandomQuestion: finished choosing random question");
     }
 
     private void setQuestion() {
-        Log.d(TAG, "setQuestion: Starting to set question on UI");
-        if (!mViewModel.getCurrentWines().isEmpty()) {
+        if (!mViewModel.getSelectedWines().isEmpty()) {
             Random r = new Random();
-            int randomIndex = r.nextInt(mViewModel.getCurrentQuestion().size());
+            int randomIndex = r.nextInt(mViewModel.getSelectedQuestion().size());
 
-            Log.d(TAG, "setQuestion: Trying to retrieve a question from viewModel ");
-            String currentQuestion = mViewModel.getCurrentQuestion().get(randomIndex).getQuestion();
-            Log.d(TAG, "setQuestion: Retrieved question from viewModel ");
+            String currentQuestion = mViewModel.getSelectedQuestion().get(randomIndex).getQuestion();
 
-            Log.d(TAG, "setQuestion: Trying to replace placeholders if they exist");
             String one, two, three;
-            one = currentQuestion.substring(0, mViewModel.getCurrentQuestion().get(randomIndex).getQuestion().indexOf("#"));
+            one = currentQuestion.substring(0, mViewModel.getSelectedQuestion().get(randomIndex).getQuestion().indexOf("#"));
             two = currentQuestion.substring(currentQuestion.indexOf("!") + 1);
 
 
@@ -445,116 +402,92 @@ public class PlayActivity extends AppCompatActivity {
             } else {
                 three = one + two;
             }
-            Log.d(TAG, "setQuestion: Done replacing placeholders if they exist");
 
-            Log.d(TAG, "setQuestion: Trying to set question to UI");
             TextView tvQuestion = findViewById(R.id.tv_play_question);
             tvQuestion.setText(three);
-            Log.d(TAG, "setQuestion: Finished setting question to UI");
 
         } else {
             Log.d(TAG, "setQuestion: ERROR currentWinesList is empty");
         }
-        Log.d(TAG, "setQuestion: Finished setting question on UI");
-
     }
 
     private void setAnswers() {
-        Log.d(TAG, "setAnswers: Trying to set answers to UI");
         Button btnAnswer1 = findViewById(R.id.btn_play_answer1);
         Button btnAnswer2 = findViewById(R.id.btn_play_answer2);
         Button btnAnswer3 = findViewById(R.id.btn_play_answer3);
 
 
-        switch (mViewModel.getCurrentQuestion().get(0).getType()) {
+        switch (mViewModel.getSelectedQuestion().get(0).getType()) {
             case "name":
-                btnAnswer1.setText(mViewModel.getCurrentWines().get(0).getName());
-                btnAnswer2.setText(mViewModel.getCurrentWines().get(1).getName());
-                btnAnswer3.setText(mViewModel.getCurrentWines().get(2).getName());
+                btnAnswer1.setText(mViewModel.getSelectedWines().get(0).getName());
+                btnAnswer2.setText(mViewModel.getSelectedWines().get(1).getName());
+                btnAnswer3.setText(mViewModel.getSelectedWines().get(2).getName());
                 break;
             case "category":
-                btnAnswer1.setText(mViewModel.getCurrentWines().get(0).getCategory());
-                btnAnswer2.setText(mViewModel.getCurrentWines().get(1).getCategory());
-                btnAnswer3.setText(mViewModel.getCurrentWines().get(2).getCategory());
+                btnAnswer1.setText(mViewModel.getSelectedWines().get(0).getCategory());
+                btnAnswer2.setText(mViewModel.getSelectedWines().get(1).getCategory());
+                btnAnswer3.setText(mViewModel.getSelectedWines().get(2).getCategory());
                 break;
             case "glass":
-                btnAnswer1.setText(Float.toString(mViewModel.getCurrentWines().get(0).getGlassPrice()));
-                btnAnswer2.setText(Float.toString(mViewModel.getCurrentWines().get(1).getGlassPrice()));
-                btnAnswer3.setText(Float.toString(mViewModel.getCurrentWines().get(2).getGlassPrice()));
+                btnAnswer1.setText(Float.toString(mViewModel.getSelectedWines().get(0).getGlassPrice()));
+                btnAnswer2.setText(Float.toString(mViewModel.getSelectedWines().get(1).getGlassPrice()));
+                btnAnswer3.setText(Float.toString(mViewModel.getSelectedWines().get(2).getGlassPrice()));
                 break;
             case "bottle":
-                btnAnswer1.setText(Float.toString(mViewModel.getCurrentWines().get(0).getBottlePrice()));
-                btnAnswer2.setText(Float.toString(mViewModel.getCurrentWines().get(1).getBottlePrice()));
-                btnAnswer3.setText(Float.toString(mViewModel.getCurrentWines().get(2).getBottlePrice()));
+                btnAnswer1.setText(Float.toString(mViewModel.getSelectedWines().get(0).getBottlePrice()));
+                btnAnswer2.setText(Float.toString(mViewModel.getSelectedWines().get(1).getBottlePrice()));
+                btnAnswer3.setText(Float.toString(mViewModel.getSelectedWines().get(2).getBottlePrice()));
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + mViewModel.getCurrentQuestion().get(0).getType());
+                throw new IllegalStateException("Unexpected value: " + mViewModel.getSelectedQuestion().get(0).getType());
         }
-        Log.d(TAG, "setAnswers: Finished setting answers to UI");
     }
 
     private void checkAnswer(Button button) {
-        Log.d(TAG, "checkAnswer: Trying to check answer");
 
-        switch (mViewModel.getCurrentQuestion().get(0).getType()) {
+        switch (mViewModel.getSelectedQuestion().get(0).getType()) {
             case "name":
                 if (mViewModel.getAnswerWine().getName().equals(button.getText().toString())) {
-                    Log.d(TAG, "checkAnswer: answer is correct");
                     button.setBackgroundResource(R.drawable.background_button_navigation_green);
                     mViewModel.setScore(mViewModel.getScore() + 1);
-                    Log.d(TAG, "checkAnswer: score: " + mViewModel.getScore() + " was saved into viewModel");
                 } else {
-                    Log.d(TAG, "checkAnswer: answer is incorrect");
                     button.setBackgroundResource(R.drawable.background_button_navigation_red);
                     button.setForeground(getResources().getDrawable(R.drawable.ic_wrong_black_24dp, null));
                 }
                 break;
             case "category":
                 if (mViewModel.getAnswerWine().getCategory().equals(button.getText().toString())) {
-                    Log.d(TAG, "checkAnswer: answer is correct");
                     button.setBackgroundResource(R.drawable.background_button_navigation_green);
                     mViewModel.setScore(mViewModel.getScore() + 1);
-                    Log.d(TAG, "checkAnswer: score: " + mViewModel.getScore() + " was saved into viewModel");
                 } else {
-                    Log.d(TAG, "checkAnswer: answer is incorrect");
                     button.setBackgroundResource(R.drawable.background_button_navigation_red);
                     button.setForeground(getResources().getDrawable(R.drawable.ic_wrong_black_24dp, null));
                 }
                 break;
             case "glass":
                 if (mViewModel.getAnswerWine().getGlassPrice() == Float.parseFloat(button.getText().toString())) {
-                    Log.d(TAG, "checkAnswer: answer is correct");
                     button.setBackgroundResource(R.drawable.background_button_navigation_green);
                     mViewModel.setScore(mViewModel.getScore() + 1);
-                    Log.d(TAG, "checkAnswer: score: " + mViewModel.getScore() + " was saved into viewModel");
                 } else {
-                    Log.d(TAG, "checkAnswer: answer is incorrect");
                     button.setBackgroundResource(R.drawable.background_button_navigation_red);
                     button.setForeground(getResources().getDrawable(R.drawable.ic_wrong_black_24dp, null));
                 }
                 break;
             case "bottle":
                 if (mViewModel.getAnswerWine().getBottlePrice() == Float.parseFloat(button.getText().toString())) {
-                    Log.d(TAG, "checkAnswer: answer is correct");
                     button.setBackgroundResource(R.drawable.background_button_navigation_green);
                     mViewModel.setScore(mViewModel.getScore() + 1);
-                    Log.d(TAG, "checkAnswer: score: " + mViewModel.getScore() + " was saved into viewModel");
                 } else {
-                    Log.d(TAG, "checkAnswer: answer is incorrect");
                     button.setBackgroundResource(R.drawable.background_button_navigation_red);
                     button.setForeground(getResources().getDrawable(R.drawable.ic_wrong_black_24dp, null));
                 }
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + mViewModel.getCurrentQuestion().get(0).getType());
+                throw new IllegalStateException("Unexpected value: " + mViewModel.getSelectedQuestion().get(0).getType());
         }
-
-        Log.d(TAG, "checkAnswer: Finished checking answer");
-
     }
 
     private void resetAnswerButtons() {
-        Log.d(TAG, "resetAnswerButtons: Trying to reset answer buttons");
         Button answer1 = findViewById(R.id.btn_play_answer1);
         Button answer2 = findViewById(R.id.btn_play_answer2);
         Button answer3 = findViewById(R.id.btn_play_answer3);
@@ -567,12 +500,10 @@ public class PlayActivity extends AppCompatActivity {
         answer3.setBackgroundResource(R.drawable.background_button_navigation);
         answer3.setForeground(getResources().getDrawable(R.drawable.ic_clear_foreground_24dp, null));
         answer3.setClickable(true);
-        Log.d(TAG, "resetAnswerButtons: Finished resetting answer buttons");
 
     }
 
     private void showCorrectAnswer() {
-        Log.d(TAG, "showCorrectAnswer: Trying to show correct answer");
         Button answer1 = findViewById(R.id.btn_play_answer1);
         Button answer2 = findViewById(R.id.btn_play_answer2);
         Button answer3 = findViewById(R.id.btn_play_answer3);
@@ -587,7 +518,7 @@ public class PlayActivity extends AppCompatActivity {
             answer3.setBackgroundResource(R.drawable.background_button_navigation_green);
         }
 
-        switch (mViewModel.getCurrentQuestion().get(0).getType()) {
+        switch (mViewModel.getSelectedQuestion().get(0).getType()) {
             case "name":
                 if (answer1.getText().equals(mViewModel.getAnswerWine().getName())) {
                     answer1.setBackgroundResource(R.drawable.background_button_navigation_green);
@@ -627,24 +558,15 @@ public class PlayActivity extends AppCompatActivity {
                 }
                 break;
             default:
-                throw new IllegalStateException("Unexpected value: " + mViewModel.getCurrentQuestion().get(0).getType());
+                throw new IllegalStateException("Unexpected value: " + mViewModel.getSelectedQuestion().get(0).getType());
         }
-
-
-        Log.d(TAG, "showCorrectAnswer: Finished showing answer");
-
     }
 
     private void setNumberOfQuestionsLeft(int numberOfQuestions) {
-        Log.d(TAG, "setNumberOfQuestionsLeft: Trying to set numberOfQuestionsLeft on viewModel");
         mViewModel.setNumberOfQuestions(numberOfQuestions);
-        Log.d(TAG, "setNumberOfQuestionsLeft: Number of questions left is " + mViewModel.getNumberOfQuestions());
-        Log.d(TAG, "setNumberOfQuestionsLeft: Finished setting numberOfQuestionsLeft on viewModel");
-
     }
 
     private void scoreAlertDialog() {
-        Log.d(TAG, "scoreAlertDialog: Trying to set score dialog");
         AlertDialog.Builder builder = new AlertDialog.Builder(PlayActivity.this);
         builder.setCancelable(false);
         View dialogView = getLayoutInflater().inflate(R.layout.play_ended, null);
@@ -665,9 +587,6 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), PlayActivity.class);
                 saveScoreToDatabase(etName.getText().toString(), Integer.parseInt(tvScore.getText().toString().substring(0, 1)));
-                Log.d(TAG, "onClick: Deleting all scores");
-                clearScores();
-                Log.d(TAG, "scoreAlertDialog: Finished setting score dialog");
                 startActivity(intent);
             }
         });
@@ -676,50 +595,36 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 saveScoreToDatabase(etName.getText().toString(), Integer.parseInt(tvScore.getText().toString().substring(0, 1)));
-                Log.d(TAG, "scoreAlertDialog: Finished setting score dialog");
                 startActivity(intent);
             }
         });
     }
 
     private void saveScoreToDatabase(String name, int score) {
-        Log.d(TAG, "saveScoreToDatabase: Starting to save score to database");
         Score possibleHighScore = new Score(score, name, 1, mViewModel.getChosenType());
         int place = mAllScores.size() + 1;
-        Log.d(TAG, "saveScoreToDatabase: initial score array size is: " + mAllScores.size());
 
         if (mAllScores.isEmpty()) {
-            Log.d(TAG, "saveScoreToDatabase: the size of the initial score array is zero");
             possibleHighScore.setPlace(1);
             mViewModel.insert(possibleHighScore);
-            Log.d(TAG, "saveScoreToDatabase: inserted score" + possibleHighScore.getPlace() + possibleHighScore.getName() + possibleHighScore.getScore() + possibleHighScore.getId());
-
         } else {
-            Log.d(TAG, "saveScoreToDatabase: the size of the initial score array is NOTTT zero");
-
             //Find out if score is good enough to be saved
             for (Score savedScore : mAllScores) {
-                Log.d(TAG, "saveScoreToDatabase: iterating through the scores list");
                 //check to see what type the score is and filter on that then
                 if (savedScore.getType() == mViewModel.getChosenType()) {
-                    Log.d(TAG, "saveScoreToDatabase: This score is of the chosen type");
                     //check to see if this score is higher than any of the others
                     if (possibleHighScore.getScore() > savedScore.getScore()) {
                         place--;
-                        Log.d(TAG, "saveScoreToDatabase: This score is lower than what you scored, place is now: " + place);
-
                     }
                 }
             }
 
 
             if (place < 4) {
-                Log.d(TAG, "saveScoreToDatabase: Score is good enough to be saved, score: " + place);
                 //If it is good enough to be saved then grab that current place id and set it to
                 //the new score so it gets replaced in the dao insert method
                 for (Score savedScore : mAllScores) {
                     if (savedScore.getPlace() == place) {
-                        Log.d(TAG, "saveScoreToDatabase: Setting correct id on score item, ID " + savedScore.getId());
                         possibleHighScore.setId(savedScore.getId());
                     }
                 }
@@ -728,14 +633,10 @@ public class PlayActivity extends AppCompatActivity {
                 possibleHighScore.setPlace(place);
 
                 mViewModel.insert(possibleHighScore);
-                Log.d(TAG, "saveScoreToDatabase: Saved score into database");
             } else {
                 Log.d(TAG, "saveScoreToDatabase: Score is not good enough to be saved, score: " + place);
             }
         }
-        Log.d(TAG, "saveScoreToDatabase: Finished setting score to database");
-
-
     }
 
     private void clearScores() {

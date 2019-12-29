@@ -21,24 +21,17 @@ import java.util.List;
 public class HighScoresActivity extends AppCompatActivity {
     private static final String TAG = "HighScoresActivity";
     private List<Score> mAllScores = new ArrayList<>();
-    private ViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_high_scores);
 
-
         initViewModel();
-
-
     }
 
     private void initViewModel() {
-
-        mViewModel = ViewModelProviders.of(this).get(ViewModel.class);
-
-
+        ViewModel mViewModel = ViewModelProviders.of(this).get(ViewModel.class);
         mViewModel.getAllScores().observe(this, new Observer<List<Score>>() {
             @Override
             public void onChanged(List<Score> scores) {
@@ -49,18 +42,13 @@ public class HighScoresActivity extends AppCompatActivity {
                 }
             }
         });
-
-        Toast.makeText(this, "scores available = " + mAllScores.size(), Toast.LENGTH_SHORT).show();
-
     }
 
     private void printScore() {
         Log.d(TAG, "onClick: THE NUMBER OF SCORES IS " + mAllScores.size() + "+++++++++++++++++++++++++++++++++");
-
     }
 
     private void fillScoresTable() {
-
         TextView tvFirstName = findViewById(R.id.tv_first_name);
         TextView tvSecondName = findViewById(R.id.tv_second_name);
         TextView tvThirdName = findViewById(R.id.tv_third_name);
@@ -69,16 +57,9 @@ public class HighScoresActivity extends AppCompatActivity {
         TextView tvThirdScore = findViewById(R.id.tv_third_score);
 
         if (!mAllScores.isEmpty()) {
-            Log.d(TAG, "fillScoresTable: ScoresList size = " + mAllScores.size());
-
             for (Score score : mAllScores) {
-
                 if (score.getType() == PlayActivity.NAMES) {
-                    Log.d(TAG, "fillScoresTable1: " + score.toString());
-
                     if (score.getPlace() == 1) {
-
-                        Log.d(TAG, "fillScoresTable2: " + score.toString());
                         tvFirstName.setText(score.getName());
                         tvFirstScore.setText(Integer.toString(score.getScore()));
                     }
@@ -91,8 +72,6 @@ public class HighScoresActivity extends AppCompatActivity {
                         tvThirdScore.setText(Integer.toString(score.getScore()));
                     }
                 }
-
-
             }
         } else {
             Log.d(TAG, "fillScoresTable: Score list is empty. ScoresList size = " + mAllScores.size());
