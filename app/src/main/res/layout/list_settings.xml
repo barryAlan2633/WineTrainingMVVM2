@@ -11,7 +11,7 @@
     android:weightSum="100">
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/tv_are_you_sure_dialog_question"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:layout_weight="10"
@@ -37,7 +37,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_glassPrice"
         app:layout_constraintEnd_toStartOf="@+id/btn_categories"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_are_you_sure_dialog_question" />
 
     <Button
         android:id="@+id/btn_categories"
@@ -52,7 +52,7 @@
         app:layout_constraintBottom_toTopOf="@+id/btn_bottlePrice"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toEndOf="@+id/btn_name"
-        app:layout_constraintTop_toBottomOf="@+id/textView" />
+        app:layout_constraintTop_toBottomOf="@+id/tv_are_you_sure_dialog_question" />
 
 
     <Button

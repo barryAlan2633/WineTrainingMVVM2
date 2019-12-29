@@ -38,8 +38,7 @@ public class PlayActivity extends AppCompatActivity {
     private List<Wine> mAllWines;
     private List<Question> mAllQuestions = new ArrayList<>();
     private List<Score> mAllScores = new ArrayList<>();
-    ViewModel mViewModel;
-
+    private ViewModel mViewModel;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -242,8 +241,7 @@ public class PlayActivity extends AppCompatActivity {
 
     @Override
     public void onBackPressed() {
-        Intent intent = new Intent(getApplicationContext(), MainActivity.class);
-        startActivity(intent);
+        exitDialog();
     }
 
     private void printScore() {
@@ -301,7 +299,7 @@ public class PlayActivity extends AppCompatActivity {
 
         //Add second and third wines
         int winesAdded = 1;
-        while(winesAdded < 3) {
+        while (winesAdded < 3) {
             int randomWineIndex = r.nextInt(mAllWines.size());
             Wine possibleWine = mAllWines.get(randomWineIndex);
 
@@ -569,7 +567,7 @@ public class PlayActivity extends AppCompatActivity {
     private void scoreAlertDialog() {
         AlertDialog.Builder builder = new AlertDialog.Builder(PlayActivity.this);
         builder.setCancelable(false);
-        View dialogView = getLayoutInflater().inflate(R.layout.play_ended, null);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_game_over, null);
         builder.setView(dialogView);
         final AlertDialog alertDialog = builder.create();
         alertDialog.show();
@@ -587,6 +585,7 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), PlayActivity.class);
                 saveScoreToDatabase(etName.getText().toString(), Integer.parseInt(tvScore.getText().toString().substring(0, 1)));
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
@@ -595,6 +594,7 @@ public class PlayActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 saveScoreToDatabase(etName.getText().toString(), Integer.parseInt(tvScore.getText().toString().substring(0, 1)));
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 startActivity(intent);
             }
         });
@@ -637,6 +637,40 @@ public class PlayActivity extends AppCompatActivity {
                 Log.d(TAG, "saveScoreToDatabase: Score is not good enough to be saved, score: " + place);
             }
         }
+    }
+
+    private void exitDialog() {
+        AlertDialog.Builder builder = new AlertDialog.Builder(PlayActivity.this);
+        builder.setCancelable(false);
+        View dialogView = getLayoutInflater().inflate(R.layout.dialog_are_you_sure, null);
+        builder.setView(dialogView);
+        final AlertDialog alertDialog = builder.create();
+        alertDialog.show();
+        alertDialog.getWindow().setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+
+        TextView tvQuestion = alertDialog.findViewById(R.id.tv_are_you_sure_dialog_question);
+        Button btnYes = alertDialog.findViewById(R.id.btn_yes);
+        Button btnCancel = alertDialog.findViewById(R.id.btn_cancel);
+
+        tvQuestion.setText("Are you sure you want to quit the current game?");
+
+        btnYes.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+                Intent intent = new Intent(getApplicationContext(), MainActivity.class);
+                intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
+                startActivity(intent);
+            }
+        });
+
+        btnCancel.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                alertDialog.dismiss();
+            }
+        });
+
     }
 
     private void clearScores() {
