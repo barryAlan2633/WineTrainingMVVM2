@@ -8,8 +8,8 @@
     android:layout_height="wrap_content"
     android:background="@drawable/background_button_navigation"
     android:orientation="vertical"
-    android:weightSum="100">
-
+    android:weightSum="100"
+    android:paddingBottom="32dp">
     <TextView
         android:id="@+id/tv_are_you_sure_dialog_question"
         android:layout_width="match_parent"

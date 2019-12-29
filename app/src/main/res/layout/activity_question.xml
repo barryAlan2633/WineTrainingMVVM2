@@ -5,9 +5,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/appBackground"
     android:orientation="vertical"
     android:weightSum="100"
+    android:background="@color/blue"
     tools:context=".Activities.ListActivity">
 
     <com.google.android.material.appbar.AppBarLayout

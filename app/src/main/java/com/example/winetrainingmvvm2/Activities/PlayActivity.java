@@ -13,6 +13,7 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.AnimationUtils;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -284,6 +285,25 @@ public class PlayActivity extends AppCompatActivity {
         ConstraintLayout categoriesLayout = findViewById(R.id.layout_categories);
         ConstraintLayout playLayout = findViewById(R.id.layout_play);
 
+        TextView tvMode = findViewById(R.id.tv_mode);
+
+        switch (mViewModel.getChosenType()) {
+            case 1:
+                tvMode.setText("Names");
+                break;
+            case 2:
+                tvMode.setText("Categories");
+                break;
+            case 3:
+                tvMode.setText("Prices");
+                break;
+            case 4:
+                tvMode.setText("All");
+                break;
+            default:
+                tvMode.setText("ERROR");
+        }
+
         categoriesLayout.setVisibility(View.GONE);
         playLayout.setVisibility(View.VISIBLE);
 
@@ -483,6 +503,9 @@ public class PlayActivity extends AppCompatActivity {
             default:
                 throw new IllegalStateException("Unexpected value: " + mViewModel.getSelectedQuestion().get(0).getType());
         }
+
+        TextView tvScore = findViewById(R.id.play_tv_score);
+        tvScore.setText(Integer.toString(mViewModel.getScore()));
     }
 
     private void resetAnswerButtons() {
@@ -598,6 +621,7 @@ public class PlayActivity extends AppCompatActivity {
                 startActivity(intent);
             }
         });
+        tvScore.setAnimation(AnimationUtils.loadAnimation(this, R.anim.anim_tv_score));
     }
 
     private void saveScoreToDatabase(String name, int score) {
@@ -633,8 +657,9 @@ public class PlayActivity extends AppCompatActivity {
                 possibleHighScore.setPlace(place);
 
                 mViewModel.insert(possibleHighScore);
+                Toast.makeText(this, "Congrats you made the top three", Toast.LENGTH_SHORT).show();
             } else {
-                Log.d(TAG, "saveScoreToDatabase: Score is not good enough to be saved, score: " + place);
+                Toast.makeText(this, "Try harder next time", Toast.LENGTH_SHORT).show();
             }
         }
     }
