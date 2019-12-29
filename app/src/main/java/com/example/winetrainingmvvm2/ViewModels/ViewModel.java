@@ -1,7 +1,6 @@
 package com.example.winetrainingmvvm2.ViewModels;
 
 import android.app.Application;
-import android.util.Log;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
@@ -24,8 +23,8 @@ public class ViewModel extends AndroidViewModel {
     private static boolean mQuestionListItemClickable = true;
     private static int mNumberOfQuestions;
     private Wine mAnswerWine = null;
-    private List<Wine> mCurrentWines = new ArrayList<>();
-    private List<Question> mCurrentQuestion = new ArrayList<>();
+    private List<Wine> mSelectedWines = new ArrayList<>();
+    private List<Question> mSelectedQuestion = new ArrayList<>();
 
     //Todo some type of checking to see what is selected on the alertview
 
@@ -152,12 +151,12 @@ public class ViewModel extends AndroidViewModel {
         return mChosenType;
     }
 
-    public List<Wine> getCurrentWines() {
-        return mCurrentWines;
+    public List<Wine> getSelectedWines() {
+        return mSelectedWines;
     }
 
-    public List<Question> getCurrentQuestion() {
-        return mCurrentQuestion;
+    public List<Question> getSelectedQuestion() {
+        return mSelectedQuestion;
     }
 
     public Wine getAnswerWine() {
@@ -165,8 +164,8 @@ public class ViewModel extends AndroidViewModel {
     }
 
     public void setAnswerWine(){
-        if(!mCurrentWines.isEmpty()){
-            mAnswerWine = mCurrentWines.get(new Random().nextInt(mCurrentWines.size()));
+        if(!mSelectedWines.isEmpty()){
+            mAnswerWine = mSelectedWines.get(new Random().nextInt(mSelectedWines.size()));
         }
     }
 
