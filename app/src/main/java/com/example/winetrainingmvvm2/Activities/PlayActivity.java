@@ -9,8 +9,11 @@ import androidx.lifecycle.ViewModelProviders;
 import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
+import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.CountDownTimer;
 import android.os.Handler;
+import android.os.Message;
 import android.util.Log;
 import android.view.View;
 import android.view.animation.AnimationUtils;
@@ -28,6 +31,10 @@ import com.example.winetrainingmvvm2.ViewModels.ViewModel;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Random;
+import java.util.TimerTask;
+import java.util.concurrent.TimeUnit;
+
+import static java.lang.Float.parseFloat;
 
 public class PlayActivity extends AppCompatActivity {
     private static final String TAG = "PlayActivity";
@@ -40,7 +47,7 @@ public class PlayActivity extends AppCompatActivity {
     private List<Question> mAllQuestions = new ArrayList<>();
     private List<Score> mAllScores = new ArrayList<>();
     private ViewModel mViewModel;
-
+    CountDownTimer countDownTimer;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -459,9 +466,68 @@ public class PlayActivity extends AppCompatActivity {
             default:
                 throw new IllegalStateException("Unexpected value: " + mViewModel.getSelectedQuestion().get(0).getType());
         }
+
+
+        final TextView tvTimer = findViewById(R.id.tv_timer);
+        tvTimer.setText("10");
+        countDownTimer = new CountDownTimer(10000, 10) {
+
+            public void onTick(long millisUntilFinished) {
+                if(millisUntilFinished < 5000){
+                    tvTimer.setBackground(getResources().getDrawable(R.drawable.background_timer_yellow,null));
+                }
+                if(millisUntilFinished < 2500){
+                    tvTimer.setBackground(getResources().getDrawable(R.drawable.background_timer_orange,null));
+
+                }
+
+                String hms = String.format("%2d:%1d", TimeUnit.MILLISECONDS.toSeconds(millisUntilFinished),
+                        (TimeUnit.MILLISECONDS.toMillis(millisUntilFinished) % TimeUnit.SECONDS.toMillis(1))/10);
+                        tvTimer.setText(hms);
+            }
+
+            public void onFinish() {
+                tvTimer.setBackground(getResources().getDrawable(R.drawable.background_timer_red,null));
+                tvTimer.setText("0");
+                setNumberOfQuestionsLeft(mViewModel.getNumberOfQuestions() - 1);
+                 Button btnAnswer1 = findViewById(R.id.btn_play_answer1);
+                 Button btnAnswer2 = findViewById(R.id.btn_play_answer2);
+                 Button btnAnswer3 = findViewById(R.id.btn_play_answer3);
+
+                btnAnswer1.setClickable(false);
+                btnAnswer2.setClickable(false);
+                btnAnswer3.setClickable(false);
+                Handler h = new Handler();
+                h.postDelayed(new Runnable() {
+                    public void run() {
+                        showCorrectAnswer();
+                    }
+
+                }, 1000);
+                if (mViewModel.getNumberOfQuestions() > 0) {
+                    h.postDelayed(new Runnable() {
+                        public void run() {
+                            resetAnswerButtons();
+                            pickRandomQuestion();
+                            pickRandomWinesAndAnswer();
+                            setQuestion();
+                            setAnswers();
+                            tvTimer.setBackground(getResources().getDrawable(R.drawable.background_timer,null));
+                        }
+
+                    }, 2000);
+                } else {
+                    mViewModel.setNumberOfQuestions(10);
+                    scoreAlertDialog();
+                }
+            }
+        }.start();
+
     }
 
+
     private void checkAnswer(Button button) {
+        countDownTimer.cancel();
 
         switch (mViewModel.getSelectedQuestion().get(0).getType()) {
             case "name":
@@ -483,7 +549,7 @@ public class PlayActivity extends AppCompatActivity {
                 }
                 break;
             case "glass":
-                if (mViewModel.getAnswerWine().getGlassPrice() == Float.parseFloat(button.getText().toString())) {
+                if (mViewModel.getAnswerWine().getGlassPrice() == parseFloat(button.getText().toString())) {
                     button.setBackgroundResource(R.drawable.background_button_navigation_green);
                     mViewModel.setScore(mViewModel.getScore() + 1);
                 } else {
@@ -492,7 +558,7 @@ public class PlayActivity extends AppCompatActivity {
                 }
                 break;
             case "bottle":
-                if (mViewModel.getAnswerWine().getBottlePrice() == Float.parseFloat(button.getText().toString())) {
+                if (mViewModel.getAnswerWine().getBottlePrice() == parseFloat(button.getText().toString())) {
                     button.setBackgroundResource(R.drawable.background_button_navigation_green);
                     mViewModel.setScore(mViewModel.getScore() + 1);
                 } else {
@@ -561,20 +627,20 @@ public class PlayActivity extends AppCompatActivity {
                 }
                 break;
             case "glass":
-                if (Float.parseFloat(answer1.getText().toString()) == mViewModel.getAnswerWine().getGlassPrice()) {
+                if (parseFloat(answer1.getText().toString()) == mViewModel.getAnswerWine().getGlassPrice()) {
                     answer1.setBackgroundResource(R.drawable.background_button_navigation_green);
-                } else if (Float.parseFloat(answer2.getText().toString()) == mViewModel.getAnswerWine().getGlassPrice()) {
+                } else if (parseFloat(answer2.getText().toString()) == mViewModel.getAnswerWine().getGlassPrice()) {
                     answer2.setBackgroundResource(R.drawable.background_button_navigation_green);
-                } else if (Float.parseFloat(answer3.getText().toString()) == mViewModel.getAnswerWine().getGlassPrice()) {
+                } else if (parseFloat(answer3.getText().toString()) == mViewModel.getAnswerWine().getGlassPrice()) {
                     answer3.setBackgroundResource(R.drawable.background_button_navigation_green);
                 }
                 break;
             case "bottle":
-                if (Float.parseFloat(answer1.getText().toString()) == mViewModel.getAnswerWine().getBottlePrice()) {
+                if (parseFloat(answer1.getText().toString()) == mViewModel.getAnswerWine().getBottlePrice()) {
                     answer1.setBackgroundResource(R.drawable.background_button_navigation_green);
-                } else if (Float.parseFloat(answer2.getText().toString()) == mViewModel.getAnswerWine().getBottlePrice()) {
+                } else if (parseFloat(answer2.getText().toString()) == mViewModel.getAnswerWine().getBottlePrice()) {
                     answer2.setBackgroundResource(R.drawable.background_button_navigation_green);
-                } else if (Float.parseFloat(answer3.getText().toString()) == mViewModel.getAnswerWine().getBottlePrice()) {
+                } else if (parseFloat(answer3.getText().toString()) == mViewModel.getAnswerWine().getBottlePrice()) {
                     answer3.setBackgroundResource(R.drawable.background_button_navigation_green);
                 }
                 break;
