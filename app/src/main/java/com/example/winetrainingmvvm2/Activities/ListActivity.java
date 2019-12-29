@@ -153,7 +153,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         cardViewLayout.setVisibility(View.VISIBLE);
         recyclerView.setAlpha((float) 0.5);
-        recyclerView.setClickable(false);
+        mWineViewModel.setWineListItemClickable(false);
     }
 
     private void setOldItemInfo(Wine wine) {
@@ -195,7 +195,8 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         cardViewLayout.setVisibility(View.GONE);
         recyclerView.setAlpha(1);
-        recyclerView.setClickable(true);
+        mWineViewModel.setWineListItemClickable(true);
+
 
         actionButtonNew.setVisibility(View.VISIBLE);
         InputMethodManager inputMethodManager =
@@ -296,9 +297,11 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(ListActivity.this, "Entered Edit Item Mode", Toast.LENGTH_SHORT).show();
-        mIsNewItem = false;
-        openNewItemInterface();
-        setOldItemInfo(mWineAdapter.getWineAt(position));
+        if(mWineViewModel.isWineListItemClickable()){
+            Toast.makeText(ListActivity.this, "Entered Edit Item Mode", Toast.LENGTH_SHORT).show();
+            mIsNewItem = false;
+            openNewItemInterface();
+            setOldItemInfo(mWineAdapter.getWineAt(position));
+        }
     }
 }

@@ -151,7 +151,7 @@ public class QuestionActivity extends AppCompatActivity implements OnItemClickLi
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         cardViewLayout.setVisibility(View.VISIBLE);
         recyclerView.setAlpha((float) 0.5);
-        recyclerView.setClickable(false);
+        mViewModel.setQuestionListItemClickable(false);
     }
 
     private void setOldItemInfo(Question question) {
@@ -207,7 +207,7 @@ public class QuestionActivity extends AppCompatActivity implements OnItemClickLi
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         cardViewLayout.setVisibility(View.GONE);
         recyclerView.setAlpha(1);
-        recyclerView.setClickable(true);
+        mViewModel.setQuestionListItemClickable(true);
 
         actionButtonNew.setVisibility(View.VISIBLE);
         InputMethodManager inputMethodManager =
@@ -306,9 +306,11 @@ public class QuestionActivity extends AppCompatActivity implements OnItemClickLi
 
     @Override
     public void onItemClick(int position) {
-        Toast.makeText(QuestionActivity.this, "Entered Edit Item Mode", Toast.LENGTH_SHORT).show();
-        mIsNewItem = false;
-        openNewItemInterface();
-        setOldItemInfo(mQuestionAdapter.getQuestionAt(position));
+        if(mViewModel.isQuestionListItemClickable()){
+            Toast.makeText(QuestionActivity.this, "Entered Edit Item Mode", Toast.LENGTH_SHORT).show();
+            mIsNewItem = false;
+            openNewItemInterface();
+            setOldItemInfo(mQuestionAdapter.getQuestionAt(position));
+        }
     }
 }
