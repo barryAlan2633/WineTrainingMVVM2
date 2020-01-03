@@ -1,8 +1,6 @@
 package com.example.winetrainingmvvm2.Activities;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -10,12 +8,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
@@ -28,7 +24,7 @@ import com.example.winetrainingmvvm2.Adapters.OnItemClickListener;
 import com.example.winetrainingmvvm2.Adapters.QuestionAdapter;
 import com.example.winetrainingmvvm2.Models.Question;
 import com.example.winetrainingmvvm2.R;
-import com.example.winetrainingmvvm2.ViewModels.ViewModel;
+import com.example.winetrainingmvvm2.ViewModels.ViewModel2;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -36,7 +32,7 @@ import java.util.List;
 public class QuestionActivity extends AppCompatActivity implements OnItemClickListener {
     private static final String TAG = "ListActivity";
 
-    private ViewModel mViewModel;
+    private ViewModel2 mViewModel;
     private QuestionAdapter mQuestionAdapter;
 
     boolean mIsNewItem;
@@ -133,7 +129,7 @@ public class QuestionActivity extends AppCompatActivity implements OnItemClickLi
     }
 
     private void initViewModel() {
-        mViewModel = ViewModelProviders.of(this).get(ViewModel.class);
+        mViewModel = ViewModelProviders.of(this).get(ViewModel2.class);
 
         mViewModel.getAllQuestions().observe(this, new Observer<List<Question>>() {
             @Override

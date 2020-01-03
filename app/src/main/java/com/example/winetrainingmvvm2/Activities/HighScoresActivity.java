@@ -6,17 +6,16 @@ import androidx.lifecycle.ViewModelProviders;
 
 import android.os.Bundle;
 import android.util.Log;
-import android.widget.Button;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.winetrainingmvvm2.Models.Score;
-import com.example.winetrainingmvvm2.Models.Wine;
 import com.example.winetrainingmvvm2.R;
-import com.example.winetrainingmvvm2.ViewModels.ViewModel;
+import com.example.winetrainingmvvm2.ViewModels.ViewModel2;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static com.example.winetrainingmvvm2.Constants.constants.NAMES;
 
 public class HighScoresActivity extends AppCompatActivity {
     private static final String TAG = "HighScoresActivity";
@@ -31,7 +30,7 @@ public class HighScoresActivity extends AppCompatActivity {
     }
 
     private void initViewModel() {
-        ViewModel mViewModel = ViewModelProviders.of(this).get(ViewModel.class);
+        ViewModel2 mViewModel = ViewModelProviders.of(this).get(ViewModel2.class);
         mViewModel.getAllScores().observe(this, new Observer<List<Score>>() {
             @Override
             public void onChanged(List<Score> scores) {
@@ -58,7 +57,7 @@ public class HighScoresActivity extends AppCompatActivity {
 
         if (!mAllScores.isEmpty()) {
             for (Score score : mAllScores) {
-                if (score.getType() == PlayActivity.NAMES) {
+                if (score.getType() == NAMES) {
                     if (score.getPlace() == 1) {
                         tvFirstName.setText(score.getName());
                         tvFirstScore.setText(Integer.toString(score.getScore()));

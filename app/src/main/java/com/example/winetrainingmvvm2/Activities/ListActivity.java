@@ -1,7 +1,6 @@
 package com.example.winetrainingmvvm2.Activities;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.cardview.widget.CardView;
 import androidx.lifecycle.Observer;
@@ -11,16 +10,12 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.content.Context;
-import android.graphics.Color;
-import android.graphics.drawable.ColorDrawable;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuInflater;
-import android.view.MenuItem;
 import android.view.View;
 import android.view.WindowManager;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.Button;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -28,7 +23,7 @@ import com.example.winetrainingmvvm2.Adapters.OnItemClickListener;
 import com.example.winetrainingmvvm2.Adapters.WineAdapter;
 import com.example.winetrainingmvvm2.Models.Wine;
 import com.example.winetrainingmvvm2.R;
-import com.example.winetrainingmvvm2.ViewModels.ViewModel;
+import com.example.winetrainingmvvm2.ViewModels.ViewModel2;
 import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
@@ -36,7 +31,7 @@ import java.util.List;
 public class ListActivity extends AppCompatActivity implements OnItemClickListener {
     private static final String TAG = "ListActivity";
 
-    private ViewModel mWineViewModel;
+    private ViewModel2 mWineViewModel;
     private WineAdapter mWineAdapter;
 
     boolean mIsNewItem;
@@ -135,7 +130,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
     }
 
     private void initViewModel() {
-        mWineViewModel = ViewModelProviders.of(this).get(ViewModel.class);
+        mWineViewModel = ViewModelProviders.of(this).get(ViewModel2.class);
 
         mWineViewModel.getAllWines().observe(this, new Observer<List<Wine>>() {
             @Override

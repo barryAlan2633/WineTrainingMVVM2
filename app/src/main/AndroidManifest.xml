@@ -14,7 +14,7 @@
             android:parentActivityName=".Activities.MainActivity" >
         </activity>
         <activity
-            android:name=".Activities.PlayActivity"
+            android:name=".Activities.PlayActivity2"
             android:parentActivityName=".Activities.MainActivity" />
         <activity
             android:name=".Activities.ListActivity"
