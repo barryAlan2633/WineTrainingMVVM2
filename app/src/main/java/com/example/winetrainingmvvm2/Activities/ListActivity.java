@@ -28,6 +28,9 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import java.util.List;
 
+import static com.example.winetrainingmvvm2.Constants.Constants.FALSE;
+import static com.example.winetrainingmvvm2.Constants.Constants.TRUE;
+
 public class ListActivity extends AppCompatActivity implements OnItemClickListener {
     private static final String TAG = "ListActivity";
 
@@ -148,7 +151,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         cardViewLayout.setVisibility(View.VISIBLE);
         recyclerView.setAlpha((float) 0.5);
-        mWineViewModel.setWineListItemClickable(false);
+        mWineViewModel.getGameState().set(9,FALSE);
     }
 
     private void setOldItemInfo(Wine wine) {
@@ -190,7 +193,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
         RecyclerView recyclerView = findViewById(R.id.recyclerView);
         cardViewLayout.setVisibility(View.GONE);
         recyclerView.setAlpha(1);
-        mWineViewModel.setWineListItemClickable(true);
+        mWineViewModel.getGameState().set(9,TRUE);
 
 
         actionButtonNew.setVisibility(View.VISIBLE);
@@ -217,7 +220,7 @@ public class ListActivity extends AppCompatActivity implements OnItemClickListen
 
     @Override
     public void onItemClick(int position) {
-        if(mWineViewModel.isWineListItemClickable()){
+        if(mWineViewModel.getGameState().get(9) == TRUE){
             Toast.makeText(ListActivity.this, "Entered Edit Item Mode", Toast.LENGTH_SHORT).show();
             mIsNewItem = false;
             openNewItemInterface();

@@ -2,12 +2,12 @@ package com.example.winetrainingmvvm2.ViewModels;
 
 
 import android.app.Application;
-import android.util.Log;
-import android.widget.Toast;
+import android.os.CountDownTimer;
 
 import androidx.annotation.NonNull;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import com.example.winetrainingmvvm2.Models.Question;
 import com.example.winetrainingmvvm2.Models.Score;
@@ -19,13 +19,26 @@ import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import static com.example.winetrainingmvvm2.Constants.constants.ALL;
-import static com.example.winetrainingmvvm2.Constants.constants.CATEGORIES;
-import static com.example.winetrainingmvvm2.Constants.constants.FALSE;
-import static com.example.winetrainingmvvm2.Constants.constants.NAMES;
-import static com.example.winetrainingmvvm2.Constants.constants.PRICES;
-import static com.example.winetrainingmvvm2.Constants.constants.TRUE;
-import static com.example.winetrainingmvvm2.Constants.constants.WHITE;
+import static com.example.winetrainingmvvm2.Constants.Constants.ALL;
+import static com.example.winetrainingmvvm2.Constants.Constants.ANSWER_INDEX;
+import static com.example.winetrainingmvvm2.Constants.Constants.BTN123_CLICKABLE;
+import static com.example.winetrainingmvvm2.Constants.Constants.BTN1_BKG;
+import static com.example.winetrainingmvvm2.Constants.Constants.BTN2_BKG;
+import static com.example.winetrainingmvvm2.Constants.Constants.BTN3_BKG;
+import static com.example.winetrainingmvvm2.Constants.Constants.CATEGORIES;
+import static com.example.winetrainingmvvm2.Constants.Constants.CHOSEN_TYPE;
+import static com.example.winetrainingmvvm2.Constants.Constants.CURRENT_SCORE;
+import static com.example.winetrainingmvvm2.Constants.Constants.FALSE;
+import static com.example.winetrainingmvvm2.Constants.Constants.GAME_ACTIVE;
+import static com.example.winetrainingmvvm2.Constants.Constants.LEAVING_DIALOG_SHOW;
+import static com.example.winetrainingmvvm2.Constants.Constants.LIVES_LEFT;
+import static com.example.winetrainingmvvm2.Constants.Constants.NAMES;
+import static com.example.winetrainingmvvm2.Constants.Constants.PRICES;
+import static com.example.winetrainingmvvm2.Constants.Constants.QUESTION_LIST_CLICKABLE;
+import static com.example.winetrainingmvvm2.Constants.Constants.SCORE_DIALOG_SHOW;
+import static com.example.winetrainingmvvm2.Constants.Constants.TRUE;
+import static com.example.winetrainingmvvm2.Constants.Constants.WHITE;
+import static com.example.winetrainingmvvm2.Constants.Constants.WINE_LIST_CLICKABLE;
 import static java.lang.Float.parseFloat;
 
 
@@ -33,23 +46,22 @@ public class ViewModel2 extends AndroidViewModel {
     private static final String TAG = "ViewModel2";
     private Repository mRepository;
 
+    private ArrayList<Integer> mGameState = new ArrayList<>(13);
+
     private static ArrayList<Question> mTODOAllQuestions = new ArrayList<>();
     private static ArrayList<Wine> mTODOAllWines = new ArrayList<>();
     private static ArrayList<Score> mTODOAllScores = new ArrayList<>();
-    private ArrayList<Integer> mGameState = new ArrayList<>(8);
-    private static int mScore = 0;
-    private static boolean mWineListItemClickable = true;
-    private static boolean mQuestionListItemClickable = true;
-    private Boolean mIsGameActive = false;
-    private static int mChosenType = -1;
+
+    private List<Wine> mSelectedWines = new ArrayList<>();
+    private Question mSelectedQuestion;
+    private Wine mAnswerWine = null;
+    private CountDownTimer countDownTimer;
 
     private LiveData<List<Wine>> mAllWines;
     private LiveData<List<Question>> mAllQuestions;
     private LiveData<List<Score>> mAllScores;
+    private MutableLiveData<Long> mTime;
 
-    private Question mSelectedQuestion;
-    private List<Wine> mSelectedWines = new ArrayList<>();
-    private Wine mAnswerWine = null;
 
     //Constructor
     public ViewModel2(@NonNull Application application) {
@@ -58,15 +70,22 @@ public class ViewModel2 extends AndroidViewModel {
         this.mAllWines = mRepository.getAllWines();
         this.mAllQuestions = mRepository.getAllQuestions();
         this.mAllScores = mRepository.getAllScores();
-        mScore = 0;
-        mGameState.add(0,WHITE);//0,1,2 for background colors of answer buttons on rotation
-        mGameState.add(1,WHITE);
-        mGameState.add(2,WHITE);
-        mGameState.add(3,TRUE);//3 for clickable of answer buttons on rotation
-        mGameState.add(4,-1);//4 index of correct answer in the selected wines array list
-        mGameState.add(5,3);//5 lives left
-        mGameState.add(6,FALSE);//6 leaving game dialog showing or not
-        mGameState.add(7,FALSE);//7 score dialog showing or not
+        mGameState.add(BTN1_BKG, WHITE);//0,1,2 for background colors of answer buttons on rotation
+        mGameState.add(BTN2_BKG, WHITE);
+        mGameState.add(BTN3_BKG, WHITE);
+        mGameState.add(BTN123_CLICKABLE, TRUE);
+        mGameState.add(ANSWER_INDEX, -1);
+        mGameState.add(LIVES_LEFT, 3);
+        mGameState.add(LEAVING_DIALOG_SHOW, FALSE);
+        mGameState.add(SCORE_DIALOG_SHOW, FALSE);
+        mGameState.add(CURRENT_SCORE, 0);
+        mGameState.add(WINE_LIST_CLICKABLE, TRUE);
+        mGameState.add(QUESTION_LIST_CLICKABLE, TRUE);
+        mGameState.add(GAME_ACTIVE, FALSE);
+        mGameState.add(CHOSEN_TYPE, -1);
+
+        mTime = new MutableLiveData<>();
+
 //        deleteAllQuestions();
 //        deleteAllWines();
 //        deleteAllScores();
@@ -75,29 +94,34 @@ public class ViewModel2 extends AndroidViewModel {
     }
 
     //Getters
-    public boolean isGameActive() { return mIsGameActive; }
-    public int getChosenType() { return mChosenType; }
-    public List<Wine> getSelectedWines() { return mSelectedWines; }
-    public Question getSelectedQuestion() { return mSelectedQuestion; }
-    public Wine getAnswer() { return mAnswerWine; }
-    public int getScore() { return mScore; }
-    public boolean isQuestionListItemClickable() { return mQuestionListItemClickable; }
-    public boolean isWineListItemClickable() { return mWineListItemClickable; }
-    public ArrayList<Integer> getGameState() { return mGameState; }
+    public List<Wine> getSelectedWines() {
+        return mSelectedWines;
+    }
+
+    public Question getSelectedQuestion() {
+        return mSelectedQuestion;
+    }
+
+    public Wine getAnswer() {
+        return mAnswerWine;
+    }
+
+    public ArrayList<Integer> getGameState() {
+        return mGameState;
+    }
 
     //Setters
-    public void setIsGameActive(boolean isGameActive) { mIsGameActive = isGameActive; }
-    public void setChosenType(int chosenType) { mChosenType = chosenType; }
-
-    public void setTODOQuestions(List<Question> list){
+    public void setTODOQuestions(List<Question> list) {
         mTODOAllQuestions.clear();
         mTODOAllQuestions.addAll(list);
     }
-    public void setTODOWines(List<Wine> list){
+
+    public void setTODOWines(List<Wine> list) {
         mTODOAllWines.clear();
         mTODOAllWines.addAll(list);
     }
-    public void setTODOScores(List<Score> list){
+
+    public void setTODOScores(List<Score> list) {
         mTODOAllScores.clear();
         mTODOAllScores.addAll(list);
     }
@@ -108,24 +132,18 @@ public class ViewModel2 extends AndroidViewModel {
 
         while (mSelectedQuestion == null) {
             Question possibleQuestion = mTODOAllQuestions.get(r.nextInt(mTODOAllQuestions.size()));
-            Log.d(TAG, "generateQuestion: help");
-            if (mChosenType == NAMES && possibleQuestion.getType().equals("name")) {
+            if (mGameState.get(CHOSEN_TYPE) == NAMES && possibleQuestion.getType().equals("name")) {
+                mSelectedQuestion = possibleQuestion;
+            } else if (mGameState.get(CHOSEN_TYPE) == CATEGORIES && possibleQuestion.getType().equals("category")) {
+                mSelectedQuestion = possibleQuestion;
+            } else if (mGameState.get(CHOSEN_TYPE) == PRICES && (possibleQuestion.getType().equals("glass") || possibleQuestion.getType().equals("bottle"))) {
+                mSelectedQuestion = possibleQuestion;
+            } else if (mGameState.get(CHOSEN_TYPE) == ALL) {
                 mSelectedQuestion = possibleQuestion;
             }
-            else if (mChosenType == CATEGORIES && possibleQuestion.getType().equals("category")) {
-                mSelectedQuestion = possibleQuestion;
-            }
-            else if (mChosenType == PRICES && (possibleQuestion.getType().equals("glass") || possibleQuestion.getType().equals("bottle"))) {
-                mSelectedQuestion = possibleQuestion;
-            }
-            else if (mChosenType == ALL) {
-                mSelectedQuestion = possibleQuestion;
-            }
-
         }
-
-
     }
+
     public void generateAnswerAndChoices() {
         //Add three random wines with different categories to an empty CurrentQuestionWines List
         mSelectedWines.clear();
@@ -151,11 +169,12 @@ public class ViewModel2 extends AndroidViewModel {
         Collections.shuffle(mSelectedWines);
 
         //Choosing an answer at random out of the three wines that were selected
-        if(!mSelectedWines.isEmpty()){
+        if (!mSelectedWines.isEmpty()) {
             mAnswerWine = mSelectedWines.get(new Random().nextInt(mSelectedWines.size()));
-            mGameState.set(4,mSelectedWines.indexOf(mAnswerWine));
+            mGameState.set(ANSWER_INDEX, mSelectedWines.indexOf(mAnswerWine));
         }
     }
+
     private boolean doesSelectedWineListContain(String type, Wine possibleWine) {
 
         if (mSelectedWines.contains(possibleWine)) {
@@ -192,43 +211,42 @@ public class ViewModel2 extends AndroidViewModel {
 
         return false;
     }
-    public void setWineListItemClickable(boolean isWineListItemClickable) { mWineListItemClickable = isWineListItemClickable; }
-    public void setQuestionListItemClickable(boolean isQuestionListItemClickable) { mQuestionListItemClickable = isQuestionListItemClickable; }
 
-    //
+    public void cancelCountDownTimer() {
+        countDownTimer.cancel();
+    }
+
+
+    //Logic
     public boolean checkAnswer(String chosenAnswer) {
         //Reduce the number of lives by one
         switch (mSelectedQuestion.getType()) {
             case "name":
                 if (mAnswerWine.getName().equals(chosenAnswer)) {
-                    mScore ++;
+                    getGameState().set(CURRENT_SCORE, getGameState().get(CURRENT_SCORE) + 1);
                     return true;
                 } else {
-                    mGameState.set(5,mGameState.get(5)-1);
                     return false;
                 }
             case "category":
                 if (mAnswerWine.getCategory().equals(chosenAnswer)) {
-                    mScore ++;
+                    getGameState().set(CURRENT_SCORE, getGameState().get(CURRENT_SCORE) + 1);
                     return true;
                 } else {
-                    mGameState.set(5,mGameState.get(5)-1);
                     return false;
                 }
             case "glass":
                 if (mAnswerWine.getGlassPrice() == parseFloat(chosenAnswer)) {
-                    mScore ++;
+                    getGameState().set(CURRENT_SCORE, getGameState().get(CURRENT_SCORE) + 1);
                     return true;
                 } else {
-                    mGameState.set(5,mGameState.get(5)-1);
                     return false;
                 }
             case "bottle":
                 if (mAnswerWine.getBottlePrice() == parseFloat(chosenAnswer)) {
-                    mScore ++;
+                    getGameState().set(CURRENT_SCORE, getGameState().get(CURRENT_SCORE) + 1);
                     return true;
                 } else {
-                    mGameState.set(5,mGameState.get(5)-1);
                     return false;
                 }
             default:
@@ -237,7 +255,7 @@ public class ViewModel2 extends AndroidViewModel {
     }
 
     public boolean saveScoreToDatabase(String name, int score) {
-        Score possibleHighScore = new Score(score, name, 1, mChosenType);
+        Score possibleHighScore = new Score(score, name, 1, mGameState.get(CHOSEN_TYPE));
         int place = mTODOAllScores.size() + 1;
 
         if (mTODOAllScores.isEmpty()) {
@@ -248,7 +266,7 @@ public class ViewModel2 extends AndroidViewModel {
             //Find out if score is good enough to be saved
             for (Score savedScore : mTODOAllScores) {
                 //check to see what type the score is and filter on that then
-                if (savedScore.getType() == mChosenType) {
+                if (savedScore.getType() == mGameState.get(CHOSEN_TYPE)) {
                     //check to see if this score is higher than any of the others
                     if (possibleHighScore.getScore() > savedScore.getScore()) {
                         place--;
@@ -278,6 +296,20 @@ public class ViewModel2 extends AndroidViewModel {
 
 
     }
+
+    public void setCountDownTimer() {
+        countDownTimer = new CountDownTimer(10000, 1) {
+            public void onTick(long millisUntilFinished) {
+                mTime.setValue(millisUntilFinished);
+            }
+
+            public void onFinish() {
+                mTime.setValue((long) 0);
+            }
+        }.start();
+    }
+
+
     //Initialize
     private void initQuestions() {
         //Name
@@ -297,6 +329,7 @@ public class ViewModel2 extends AndroidViewModel {
         insert(new Question("glass", "What is the glass price of #name!?"));
         insert(new Question("glass", "How much is the glass of #name!?"));
     }
+
     private void initWines() {
         //House
         insert(new Wine("Frontera Chardonnay", "House", 8, 0));
@@ -370,24 +403,70 @@ public class ViewModel2 extends AndroidViewModel {
     }
 
     //Database Querying
-    public void insert(Wine wine) { mRepository.insert(wine); }
-    public void insert(Question question) { mRepository.insert(question); }
-    public void insert(Score score) { mRepository.insert(score); }
+    public void insert(Wine wine) {
+        mRepository.insert(wine);
+    }
 
-    public void update(Wine wine) { mRepository.update(wine); }
-    public void update(Question question) {mRepository.update(question);}
-    public void update(Score score) { mRepository.update(score); }
+    public void insert(Question question) {
+        mRepository.insert(question);
+    }
 
-    public void delete(Wine wine) { mRepository.delete(wine); }
-    public void delete(Question question) { mRepository.delete(question); }
-    public void delete(Score score) { mRepository.delete(score); }
+    public void insert(Score score) {
+        mRepository.insert(score);
+    }
 
-    public void deleteAllWines() { mRepository.deleteAllWines(); }
-    public void deleteAllQuestions() { mRepository.deleteAllQuestions(); }
-    public void deleteAllScores() { mRepository.deleteAllScores(); }
+    public void update(Wine wine) {
+        mRepository.update(wine);
+    }
+
+    public void update(Question question) {
+        mRepository.update(question);
+    }
+
+    public void update(Score score) {
+        mRepository.update(score);
+    }
+
+    public void delete(Wine wine) {
+        mRepository.delete(wine);
+    }
+
+    public void delete(Question question) {
+        mRepository.delete(question);
+    }
+
+    public void delete(Score score) {
+        mRepository.delete(score);
+    }
+
+    public void deleteAllWines() {
+        mRepository.deleteAllWines();
+    }
+
+    public void deleteAllQuestions() {
+        mRepository.deleteAllQuestions();
+    }
+
+    public void deleteAllScores() {
+        mRepository.deleteAllScores();
+    }
 
     //LiveData
-    public LiveData<List<Wine>> getAllWines() { return mAllWines; }
-    public LiveData<List<Question>> getAllQuestions() { return mAllQuestions; }
-    public LiveData<List<Score>> getAllScores() { return mAllScores; }
+    public LiveData<List<Wine>> getAllWines() {
+        return mAllWines;
+    }
+
+    public LiveData<List<Question>> getAllQuestions() {
+        return mAllQuestions;
+    }
+
+    public LiveData<List<Score>> getAllScores() {
+        return mAllScores;
+    }
+
+    public LiveData<Long> getTime() {
+        return mTime;
+    }
+
+
 }

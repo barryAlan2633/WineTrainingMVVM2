@@ -15,7 +15,7 @@ import com.example.winetrainingmvvm2.ViewModels.ViewModel2;
 import java.util.ArrayList;
 import java.util.List;
 
-import static com.example.winetrainingmvvm2.Constants.constants.NAMES;
+import static com.example.winetrainingmvvm2.Constants.Constants.NAMES;
 
 public class HighScoresActivity extends AppCompatActivity {
     private static final String TAG = "HighScoresActivity";
