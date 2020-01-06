@@ -74,17 +74,21 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/nameText"
                 android:layout_marginStart="8dp"
-                android:layout_toRightOf="@+id/nameText"
-                android:hint="Example name" />
+                android:inputType="textAutoComplete"
+                android:layout_toEndOf="@+id/nameText"
+                android:hint="@string/WineList_et_example_name"
+                android:importantForAutofill="no" />
 
             <EditText
                 android:id="@+id/category"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/categoryText"
+                android:inputType="textAutoComplete"
                 android:layout_marginStart="8dp"
-                android:layout_toRightOf="@+id/categoryText"
-                android:hint="Example Category" />
+                android:layout_toEndOf="@+id/categoryText"
+                android:hint="@string/WineList_et_example_category"
+                android:importantForAutofill="no" />
 
             <EditText
                 android:id="@+id/glassPrice"
@@ -92,9 +96,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/priceText"
                 android:layout_marginStart="8dp"
-                android:layout_toRightOf="@+id/priceText"
-                android:hint="Glass"
-                android:inputType="number|numberDecimal" />
+                android:layout_toEndOf="@+id/priceText"
+                android:hint="@string/WineList_et_glass"
+                android:inputType="number|numberDecimal"
+                android:importantForAutofill="no" />
 
             <EditText
                 android:id="@+id/bottlePrice"
@@ -102,9 +107,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/priceText"
                 android:layout_marginStart="8dp"
-                android:layout_toRightOf="@+id/dividerText"
-                android:hint="Bottle"
-                android:inputType="number|numberDecimal" />
+                android:layout_toEndOf="@+id/dividerText"
+                android:hint="@string/WineList_et_bottle"
+                android:inputType="number|numberDecimal"
+                android:importantForAutofill="no" />
 
             <TextView
                 android:id="@+id/priceText"
@@ -113,8 +119,8 @@
                 android:layout_below="@+id/category"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_toRightOf="@+id/categoryText"
-                android:text="Price:"
+                android:layout_toEndOf="@+id/categoryText"
+                android:text="@string/WineList_et_price"
                 android:textColor="@android:color/black" />
 
             <TextView
@@ -124,8 +130,8 @@
                 android:layout_below="@+id/name"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_toRightOf="@+id/nameText"
-                android:text="Category:"
+                android:layout_toEndOf="@+id/nameText"
+                android:text="@string/WineList_et_category"
                 android:textColor="@android:color/black" />
 
 
@@ -135,8 +141,8 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/priceText"
                 android:layout_marginStart="8dp"
-                android:layout_toRightOf="@+id/glassPrice"
-                android:text="/" />
+                android:layout_toEndOf="@+id/glassPrice"
+                android:text="@string/WineList_tv_slash" />
 
             <TextView
                 android:id="@+id/nameText"
@@ -146,7 +152,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Name:"
+                android:text="@string/WineList_tv_name"
                 android:textColor="@android:color/black" />
 
         </RelativeLayout>

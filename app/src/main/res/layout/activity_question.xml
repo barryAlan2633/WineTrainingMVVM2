@@ -74,8 +74,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/typeText"
                 android:layout_marginStart="8dp"
-                android:layout_toRightOf="@+id/typeText"
-                android:hint="name, category, glass or bottle" />
+                android:layout_toEndOf="@+id/typeText"
+                android:hint="@string/QuestionList_et_name_category_glass_or_bottle"
+                android:importantForAutofill="no"
+                android:inputType="textAutoComplete" />
 
             <EditText
                 android:id="@+id/tv_question_"
@@ -83,9 +85,10 @@
                 android:layout_height="wrap_content"
                 android:layout_alignBaseline="@id/questionText"
                 android:layout_marginStart="8dp"
-                android:layout_toRightOf="@+id/questionText"
-                android:hint="Example Question"
-                android:inputType="textMultiLine"/>
+                android:layout_toEndOf="@+id/questionText"
+                android:hint="@string/QuestionList_et_example_question"
+                android:inputType="textMultiLine|textAutoComplete"
+                android:importantForAutofill="no" />
 
             <TextView
                 android:id="@+id/questionText"
@@ -94,8 +97,8 @@
                 android:layout_below="@+id/tv_type_"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:layout_toRightOf="@+id/typeText"
-                android:text="Question:"
+                android:layout_toEndOf="@+id/typeText"
+                android:text="@string/QuestionList_tv_question"
                 android:textColor="@android:color/black" />
 
 
@@ -107,7 +110,7 @@
                 android:layout_alignParentTop="true"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
-                android:text="Type:"
+                android:text="@string/QuestionList_tv_type"
                 android:textColor="@android:color/black" />
 
         </RelativeLayout>

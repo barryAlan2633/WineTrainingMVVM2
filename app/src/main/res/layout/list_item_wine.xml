@@ -21,7 +21,7 @@
             android:layout_alignParentTop="true"
             android:layout_marginStart="8dp"
             android:layout_marginTop="8dp"
-            android:text="Name:"
+            android:text="@string/ListItemWine_tv_name"
             android:textColor="@android:color/black"/>
 
         <TextView
@@ -29,9 +29,8 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_toRightOf="@+id/nameText"
-            android:layout_alignBaseline="@id/nameText"
-            android:text="Example name" />
+            android:layout_toEndOf="@+id/nameText"
+            android:layout_alignBaseline="@id/nameText"/>
 
         <TextView
             android:id="@+id/categoryText"
@@ -39,9 +38,9 @@
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_name"
             android:layout_marginTop="8dp"
-            android:layout_toRightOf="@+id/nameText"
+            android:layout_toEndOf="@+id/nameText"
             android:layout_marginStart="8dp"
-            android:text="Category:"
+            android:text="@string/ListItemWine_tv_category"
             android:textColor="@android:color/black"/>
 
         <TextView
@@ -49,46 +48,43 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_toRightOf="@+id/categoryText"
-            android:layout_alignBaseline="@id/categoryText"
-            android:text="Example Category" />
+            android:layout_toEndOf="@+id/categoryText"
+            android:layout_alignBaseline="@id/categoryText"/>
 
         <TextView
             android:id="@+id/priceText"
-            android:text="Price:"
+            android:text="@string/ListItemWine_tv_price"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_below="@+id/tv_category"
             android:layout_marginTop="8dp"
-            android:layout_toRightOf="@+id/categoryText"
+            android:layout_toEndOf="@+id/categoryText"
             android:layout_marginStart="8dp"
             android:textColor="@android:color/black" />
 
         <TextView
             android:id="@+id/tv_glassPrice"
-            android:text="10.0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_toRightOf="@+id/priceText"
+            android:layout_toEndOf="@+id/priceText"
             android:layout_alignBaseline="@id/priceText" />
 
 
         <TextView
             android:id="@+id/dividerText"
-            android:text="/"
+            android:text="@string/ListItemWine_tv_slash"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginStart="8dp"
-            android:layout_toRightOf="@+id/tv_glassPrice"
+            android:layout_toEndOf="@+id/tv_glassPrice"
             android:layout_alignBaseline="@id/priceText" />
 
         <TextView
             android:id="@+id/tv_bottlePrice"
-            android:text="1.0"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_toRightOf="@+id/dividerText"
+            android:layout_toEndOf="@+id/dividerText"
             android:layout_marginStart="8dp"
             android:layout_alignBaseline="@id/priceText" />
 

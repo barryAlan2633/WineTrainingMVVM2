@@ -1,9 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.constraintlayout.widget.ConstraintLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:background="@drawable/background_button_navigation"
@@ -18,7 +18,7 @@
         android:layout_weight="10"
         android:layout_marginTop="32dp"
         android:gravity="center_horizontal"
-        android:text="Are you sure?"
+        android:text="@string/DialogAreYouSure_tv_are_you_sure"
         android:textColor="@color/black"
         android:textSize="40sp"
         android:paddingBottom="32dp"
@@ -32,7 +32,7 @@
         android:layout_height="50dp"
         android:background="@drawable/background_button_navigation"
         android:padding="0dp"
-        android:text="Cancel"
+        android:text="@string/DialogAreYouSure_btn_cancel"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textSize="15sp"
@@ -47,7 +47,7 @@
         android:layout_height="50dp"
         android:background="@drawable/background_button_navigation"
         android:padding="0dp"
-        android:text="Yes"
+        android:text="@string/DialogAreYouSure_btn_yes"
         android:textAlignment="center"
         android:textAllCaps="false"
         android:textSize="15sp"
