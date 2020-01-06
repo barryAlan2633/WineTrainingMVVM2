@@ -17,7 +17,6 @@ import android.widget.Toast;
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.constraintlayout.widget.ConstraintLayout;
-import androidx.lifecycle.LiveData;
 import androidx.lifecycle.Observer;
 import androidx.lifecycle.ViewModelProviders;
 
@@ -37,10 +36,13 @@ import static com.example.winetrainingmvvm2.Constants.Constants.BTN1_BKG;
 import static com.example.winetrainingmvvm2.Constants.Constants.BTN2_BKG;
 import static com.example.winetrainingmvvm2.Constants.Constants.BTN3_BKG;
 import static com.example.winetrainingmvvm2.Constants.Constants.CATEGORIES;
+import static com.example.winetrainingmvvm2.Constants.Constants.CHOOSING_CATEGORY;
 import static com.example.winetrainingmvvm2.Constants.Constants.CHOSEN_TYPE;
 import static com.example.winetrainingmvvm2.Constants.Constants.CURRENT_SCORE;
 import static com.example.winetrainingmvvm2.Constants.Constants.FALSE;
-import static com.example.winetrainingmvvm2.Constants.Constants.GAME_ACTIVE;
+import static com.example.winetrainingmvvm2.Constants.Constants.NOT_PLAYING;
+import static com.example.winetrainingmvvm2.Constants.Constants.PLAYING;
+import static com.example.winetrainingmvvm2.Constants.Constants.USER_STATE;
 import static com.example.winetrainingmvvm2.Constants.Constants.GREEN;
 import static com.example.winetrainingmvvm2.Constants.Constants.LEAVING_DIALOG_SHOW;
 import static com.example.winetrainingmvvm2.Constants.Constants.LIVES_LEFT;
@@ -76,8 +78,13 @@ public class PlayActivity2 extends AppCompatActivity {
 
         initViewModel();
 
-//      If the rotation was changed and the play activity was re-started
-        if (mViewModel.getGameState().get(GAME_ACTIVE) == TRUE) {
+        Log.d(TAG, "onCreate: "+ mViewModel.getGameState().get(USER_STATE).toString());
+        //      If the rotation was changed and the play activity was re-started
+        if(mViewModel.getGameState().get(USER_STATE) == CHOOSING_CATEGORY){
+
+        }
+        else if (mViewModel.getGameState().get(USER_STATE) == PLAYING) {
+            Log.d(TAG, "onCreate: " +  mViewModel.getGameState().get(USER_STATE).toString());
             setGameLayout();
             setQuestionLayout();
             setAnswersLayout();
@@ -97,7 +104,7 @@ public class PlayActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!mAllWines.isEmpty() && !mAllQuestions.isEmpty()) {
-                    mViewModel.getGameState().set(GAME_ACTIVE, TRUE);
+                    mViewModel.getGameState().set(USER_STATE, PLAYING);
                     mViewModel.getGameState().set(CHOSEN_TYPE, NAMES);
                     mViewModel.generateQuestion();
                     mViewModel.generateAnswerAndChoices();
@@ -120,7 +127,7 @@ public class PlayActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!mAllWines.isEmpty() && !mAllQuestions.isEmpty()) {
-                    mViewModel.getGameState().set(GAME_ACTIVE, TRUE);
+                    mViewModel.getGameState().set(USER_STATE, PLAYING);
                     mViewModel.getGameState().set(CHOSEN_TYPE, CATEGORIES);
                     mViewModel.generateQuestion();
                     mViewModel.generateAnswerAndChoices();
@@ -144,7 +151,7 @@ public class PlayActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!mAllWines.isEmpty() && !mAllQuestions.isEmpty()) {
-                    mViewModel.getGameState().set(GAME_ACTIVE, TRUE);
+                    mViewModel.getGameState().set(USER_STATE, PLAYING);
                     mViewModel.getGameState().set(CHOSEN_TYPE, PRICES);
                     mViewModel.generateQuestion();
                     mViewModel.generateAnswerAndChoices();
@@ -168,7 +175,7 @@ public class PlayActivity2 extends AppCompatActivity {
             @Override
             public void onClick(View v) {
                 if (!mAllWines.isEmpty() && !mAllQuestions.isEmpty()) {
-                    mViewModel.getGameState().set(GAME_ACTIVE, TRUE);
+                    mViewModel.getGameState().set(USER_STATE, PLAYING);
                     mViewModel.getGameState().set(CHOSEN_TYPE, ALL);
                     mViewModel.generateQuestion();
                     mViewModel.generateAnswerAndChoices();
@@ -593,7 +600,7 @@ public class PlayActivity2 extends AppCompatActivity {
         btnYes.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                mViewModel.getGameState().set(GAME_ACTIVE, FALSE);
+                mViewModel.getGameState().set(USER_STATE, NOT_PLAYING);
                 Intent intent = new Intent(getApplicationContext(), MainActivity.class);
                 intent.addFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP | Intent.FLAG_ACTIVITY_NEW_TASK);
                 mViewModel.getGameState().set(LEAVING_DIALOG_SHOW, FALSE);

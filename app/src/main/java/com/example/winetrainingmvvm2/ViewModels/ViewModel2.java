@@ -29,7 +29,8 @@ import static com.example.winetrainingmvvm2.Constants.Constants.CATEGORIES;
 import static com.example.winetrainingmvvm2.Constants.Constants.CHOSEN_TYPE;
 import static com.example.winetrainingmvvm2.Constants.Constants.CURRENT_SCORE;
 import static com.example.winetrainingmvvm2.Constants.Constants.FALSE;
-import static com.example.winetrainingmvvm2.Constants.Constants.GAME_ACTIVE;
+import static com.example.winetrainingmvvm2.Constants.Constants.NOT_PLAYING;
+import static com.example.winetrainingmvvm2.Constants.Constants.USER_STATE;
 import static com.example.winetrainingmvvm2.Constants.Constants.LEAVING_DIALOG_SHOW;
 import static com.example.winetrainingmvvm2.Constants.Constants.LIVES_LEFT;
 import static com.example.winetrainingmvvm2.Constants.Constants.NAMES;
@@ -81,7 +82,7 @@ public class ViewModel2 extends AndroidViewModel {
         mGameState.add(CURRENT_SCORE, 0);
         mGameState.add(WINE_LIST_CLICKABLE, TRUE);
         mGameState.add(QUESTION_LIST_CLICKABLE, TRUE);
-        mGameState.add(GAME_ACTIVE, FALSE);
+        mGameState.add(USER_STATE, NOT_PLAYING);
         mGameState.add(CHOSEN_TYPE, -1);
 
         mTime = new MutableLiveData<>();

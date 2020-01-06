@@ -121,8 +121,7 @@
         android:id="@+id/layout_play"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone"
-        tools:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_play_question"

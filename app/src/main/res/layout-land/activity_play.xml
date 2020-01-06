@@ -12,7 +12,7 @@
         android:id="@+id/layout_categories"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <TextView
             android:id="@+id/textView2"
@@ -114,7 +114,7 @@
         android:id="@+id/layout_play"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:visibility="visible">
+        android:visibility="gone">
 
         <TextView
             android:id="@+id/tv_play_question"
